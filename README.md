@@ -15,6 +15,12 @@ cd aws-mwaa-local-runner
 ./mwaa-local-env start
 ```
 
+>**Suggested configuration changes for demo purposes**
+>
+>Before building the image using the above steps, I made a change to the airflow.cfg file (in docker/config) to change the amount of time Apache Airflow refreshed the DAGS folder to pick up new DAGs. The default is 300 seconds (5 mins) and I changed this to 10 seconds. This does put extra load on my demo machine, but makes demos much easier.
+>
+
+
 The first time you run this, it might take some time as it downloads all the needed Docker images. Once it has finished, you should see this appear in the terminal
 
 > After the first time, it should start straight away
