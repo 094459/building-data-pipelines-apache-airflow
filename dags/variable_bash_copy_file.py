@@ -33,13 +33,13 @@ DAG_ID = os.path.basename(__file__).replace('.py', '')
 dag = DAG(
     dag_id=DAG_ID,
     default_args=default_args,
-    description='Devcon First Apache Airflow DAG',
+    description='My First Apache Airflow DAG',
     schedule_interval=None,
     start_date=days_ago(2),
-    tags=['devcon','demo'],
+    tags=['aws','demo'],
 )
 
-#work_dir="/tmp/devcon-new"
+#work_dir="/tmp/airflow-new"
 #source_file="source.txt"
 #destination_file="moved.txt"
 

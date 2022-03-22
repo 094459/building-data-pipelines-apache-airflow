@@ -110,7 +110,7 @@ FROM  {database}.ML_Latest_Small_Movies m
 INNER JOIN (SELECT rating, movieId FROM {database}.ML_Latest_Small_Ratings WHERE rating > 4) r on m.movieId = r.movieId
 """.format(database=athena_db)
 def download_zip():
-    s3c = boto3.client('s3')
+    s3c = boto3.client('s3', region_name="eu-west-1")
     indata = requests.get(download_http)
     n=0
     with zipfile.ZipFile(io.BytesIO(indata.content)) as z:       
@@ -130,7 +130,7 @@ def clean_up_csv_fn(**kwargs):
     print(athenaKey)
     cleanKey=athena_results+"join_athena_tables/"+queryId+"_clean.csv"
     print(cleanKey)
-    s3c = boto3.client('s3')
+    s3c = boto3.client('s3', region_name="eu-west-1")
     obj = s3c.get_object(Bucket=s3_bucket_name, Key=athenaKey)
     infileStr=obj['Body'].read().decode('utf-8')
     outfileStr=infileStr.replace('e', '') 
@@ -145,7 +145,7 @@ def s3_to_redshift(**kwargs):
     print(athenaKey)
     sqlQuery="copy "+redshift_table_name+" from '"+athenaKey+"' iam_role '"+redshift_iam_arn+"' CSV IGNOREHEADER 1;"
     print(sqlQuery)
-    rsd = boto3.client('redshift-data')
+    rsd = boto3.client('redshift-data', region_name="eu-west-1")
     resp = rsd.execute_statement(
         ClusterIdentifier=redshift_cluster,
         Database=redshift_db,
@@ -157,7 +157,7 @@ def s3_to_redshift(**kwargs):
     return "OK"
 
 def create_redshift_table():
-    rsd = boto3.client('redshift-data')
+    rsd = boto3.client('redshift-data', region_name="eu-west-1")
     resp = rsd.execute_statement(
         ClusterIdentifier=redshift_cluster,
         Database=redshift_db,
