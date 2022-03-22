@@ -1,0 +1,16 @@
+{
+    "athena_results": "athena-results/",
+    "aws_connection": "aws_redshift",
+    "demo_athena_db": "demo_athena_db",
+    "download_http": "http://files.grouplens.org/datasets/movielens/ml-latest-small.zip",
+    "redshift_airflow_connection": "redshift_default2",
+    "redshift_cluster": "mwaa-redshift",
+    "redshift_db": "mwaa",
+    "redshift_dbuser": "awsuser",
+    "redshift_iam_arn": "arn:aws:iam::704533066374:role/MWAA-Redshift-Cluster-mwaaredshiftservicerole2nd63-1L1W3WXJLJLD1",
+    "redshift_secret_arn": "arn:aws:secretsmanager:eu-west-1:704533066374:secret:MWAARedshiftClusterSecret9B-FTLT5RPykuY3-tkXW01",
+    "redshift_table_name": "movie_demo",
+    "s3_bucket_name": "mwaa-redshift-094459",
+    "s3_key": "files/*",
+    "test_http": "https://grouplens.org/datasets/movielens/latest/"
+}
