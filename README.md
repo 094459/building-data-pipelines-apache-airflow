@@ -4,7 +4,9 @@ This repo contains resources used during presentation and demos given at various
 
 ### Getting started with Apache Airflow
 
-To get Apache Airflow up and running on your local developer environment, try the following:
+To get Apache Airflow up and running on your local developer environment, we can use the [aws-mwaa-local-runner](https://github.com/aws/aws-mwaa-local-runner.git) project. It is a very easy way to get started with Apache Airflow, and has been configured to behave in a very similar way to the Managed Workflows for Apache Airflow managed service.
+
+To get started, try the following:
 
 > Note! Pre-reqs for this is that you have Docker Compose and a Docker Engine running in your developer environment. Check the pre-reqs [here](https://github.com/aws/aws-mwaa-local-runner#prerequisites)
 
@@ -19,6 +21,12 @@ cd aws-mwaa-local-runner
 >
 >Before building the image using the above steps, I made a change to the airflow.cfg file (in docker/config) to change the amount of time Apache Airflow refreshed the DAGS folder to pick up new DAGs. The default is 300 seconds (5 mins) and I changed this to 10 seconds. This does put extra load on my demo machine, but makes demos much easier.
 >
+> I also modifed the dockerfiles to include the following:
+>
+> ```
+> - ${HOME}/.aws/credentials:/usr/local/airflow/.aws/credentials:ro
+> ```
+> This was to ensure that the Apache Airflow containers had access to AWS credentials to access AWS resources. This is equivilant of you attaching an IAM Role to your compute resources so that applications are able to access the required AWS APIs.
 
 
 The first time you run this, it might take some time as it downloads all the needed Docker images. Once it has finished, you should see this appear in the terminal
