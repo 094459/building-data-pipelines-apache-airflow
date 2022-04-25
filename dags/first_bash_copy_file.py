@@ -32,10 +32,10 @@ DAG_ID = "my_first_dag"
 dag = DAG(
     dag_id=DAG_ID,
     default_args=default_args,
-    description='Devcon First Apache Airflow DAG',
+    description='First Apache Airflow DAG',
     schedule_interval=None,
     start_date=days_ago(2),
-    tags=['devcon','demo'],
+    tags=['aws','demo'],
 )
 
 work_dir="/tmp/airflow-new"

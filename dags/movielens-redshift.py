@@ -109,6 +109,8 @@ SELECT REPLACE ( m.title , '"' , '' ) as title, r.rating
 FROM  {database}.ML_Latest_Small_Movies m
 INNER JOIN (SELECT rating, movieId FROM {database}.ML_Latest_Small_Ratings WHERE rating > 4) r on m.movieId = r.movieId
 """.format(database=athena_db)
+
+
 def download_zip():
     s3c = boto3.client('s3', region_name="eu-west-1")
     indata = requests.get(download_http)
@@ -185,18 +187,39 @@ with DAG(
         poke_interval=5,
         dag=dag
     )
+
     files_to_s3 = PythonOperator(
         task_id="files_to_s3",
         python_callable=download_zip
     )
     
-    create_athena_movie_table = AWSAthenaOperator(task_id="create_athena_movie_table",query=create_athena_movie_table_query, database=athena_db, output_location='s3://'+s3_bucket_name+"/"+athena_results+'create_athena_movie_table')
+    create_athena_movie_table = AWSAthenaOperator(
+        task_id="create_athena_movie_table",
+        query=create_athena_movie_table_query,
+        database=athena_db,
+        output_location='s3://'+s3_bucket_name+"/"+athena_results+'create_athena_movie_table'
+        )
     
-    create_athena_ratings_table = AWSAthenaOperator(task_id="create_athena_ratings_table",query=create_athena_ratings_table_query, database=athena_db, output_location='s3://'+s3_bucket_name+"/"+athena_results+'create_athena_ratings_table')
+    create_athena_ratings_table = AWSAthenaOperator(
+        task_id="create_athena_ratings_table",
+        query=create_athena_ratings_table_query,
+        database=athena_db,
+        output_location='s3://'+s3_bucket_name+"/"+athena_results+'create_athena_ratings_table'
+        )
     
-    create_athena_tags_table = AWSAthenaOperator(task_id="create_athena_tags_table",query=create_athena_tags_table_query, database=athena_db, output_location='s3://'+s3_bucket_name+"/"+athena_results+'create_athena_tags_table')
+    create_athena_tags_table = AWSAthenaOperator(
+        task_id="create_athena_tags_table",
+        query=create_athena_tags_table_query,
+        database=athena_db,
+        output_location='s3://'+s3_bucket_name+"/"+athena_results+'create_athena_tags_table'
+        )
     
-    join_athena_tables = AWSAthenaOperator(task_id="join_athena_tables",query=join_tables_athena_query, database=athena_db, output_location='s3://'+s3_bucket_name+"/"+athena_results+'join_athena_tables')
+    join_athena_tables = AWSAthenaOperator(
+        task_id="join_athena_tables",
+        query=join_tables_athena_query,
+        database=athena_db, 
+        output_location='s3://'+s3_bucket_name+"/"+athena_results+'join_athena_tables'
+        )
     
     create_redshift_table_if_not_exists = PythonOperator(
         task_id="create_redshift_table_if_not_exists",
@@ -208,11 +231,13 @@ with DAG(
         python_callable=clean_up_csv_fn,
         provide_context=True     
     )
+
     transfer_to_redshift = PythonOperator(
         task_id="transfer_to_redshift",
         python_callable=s3_to_redshift,
         provide_context=True     
     )
+
     check_s3_for_key >> files_to_s3 >> create_athena_movie_table >> join_athena_tables >> clean_up_csv >> transfer_to_redshift
     files_to_s3 >> create_athena_ratings_table >> join_athena_tables
     files_to_s3 >> create_athena_tags_table >> join_athena_tables

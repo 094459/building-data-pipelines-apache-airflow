@@ -1,0 +1,5 @@
+{
+    "work_dir": "/tmp/airflow-summit-live",
+    "source_file": "source.txt",
+    "destination_file": "moved-summit-live.txt"
+}

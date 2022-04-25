@@ -3,7 +3,7 @@
     "aws_connection": "aws_default",
     "demo_athena_db": "demo_athena_db",
     "download_http": "https://ricsuepublicresources.s3.eu-west-1.amazonaws.com/sample-data-set/ml-latest-small.zip",
-    "redshift_airflow_connection": "aws_redshift",
+    "redshift_airflow_connection": "aws_default",
     "redshift_cluster": "mwaa-redshift-cluster",
     "redshift_db": "mwaa",
     "redshift_dbuser": "awsuser",
