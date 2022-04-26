@@ -4,7 +4,7 @@
     "demo_athena_db": "demo_athena_db",
     "download_http": "https://ricsuepublicresources.s3.eu-west-1.amazonaws.com/sample-data-set/ml-latest-small.zip",
     "redshift_airflow_connection": "aws_default",
-    "redshift_cluster": "mwaa-redshift-cluster",
+    "redshift_cluster": "airflow-summit",
     "redshift_db": "mwaa",
     "redshift_dbuser": "awsuser",
     "redshift_iam_arn": "arn:aws:iam::704533066374:role/MWAA-Redshift-Cluster-mwaaredshiftservicerole2nd63-1L1W3WXJLJLD1",
