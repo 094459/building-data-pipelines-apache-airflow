@@ -3,4 +3,5 @@ __pycache__/
 *.py[cod]
 *$py.class
 aws-mwaa-local-runner/
+.DS_Store
 

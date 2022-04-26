@@ -3,8 +3,8 @@ from airflow.operators.python_operator import PythonOperator
 
 from airflow.providers.http.sensors.http import HttpSensor
 from airflow.providers.amazon.aws.operators.athena import AWSAthenaOperator
-from airflow.providers.amazon.aws.sensors.s3_key import S3KeySensor
 from airflow.providers.amazon.aws.transfers.s3_to_redshift import S3ToRedshiftOperator
+from airflow.providers.amazon.aws.sensors.s3_key import S3KeySensor
 
 from airflow.utils.dates import days_ago
 from datetime import datetime, timedelta
@@ -233,17 +233,25 @@ with DAG(
         provide_context=True     
     )
 
-    task_transfer_s3_to_redshift = S3ToRedshiftOperator(
-        s3_bucket=s3_bucket_name,
-        s3_key="athena-results/join_athena_tables/{{ task_instance.xcom_pull(task_ids='join_athena_tables', key='return_value') }}_clean.csv",
-        schema='PUBLIC',
-        redshift_conn_id='redshift_default',
-        table=redshift_table_name,
-        copy_options=['csv IGNOREHEADER 1'],
-        task_id='transfer_s3_to_redshift',
+    transfer_to_redshift = PythonOperator(
+        task_id="transfer_to_redshift",
+        python_callable=s3_to_redshift,
+        provide_context=True     
     )
 
-    check_s3_for_key >> files_to_s3 >> create_athena_movie_table >> join_athena_tables >> clean_up_csv >> task_transfer_s3_to_redshift
-    files_to_s3 >> create_athena_ratings_table >> join_athena_tables
-    files_to_s3 >> create_athena_tags_table >> join_athena_tables
-    files_to_s3 >> create_redshift_table_if_not_exists >> task_transfer_s3_to_redshift
+    task_transfer_s3_to_redshift = S3ToRedshiftOperator(
+        s3_bucket=s3_bucket_name,
+        s3_key="athena-results/join_athena_tables/*_clean.csv",
+        schema='PUBLIC',
+        table=redshift_table_name,
+        copy_options=['csv'],
+        task_id='transfer_s3_to_redshift',
+)
+
+
+    #check_s3_for_key >> files_to_s3 >> create_athena_movie_table >> join_athena_tables >> clean_up_csv >> transfer_to_redshift
+    #files_to_s3 >> create_athena_ratings_table >> join_athena_tables
+    #files_to_s3 >> create_athena_tags_table >> join_athena_tables
+    #files_to_s3 >> create_redshift_table_if_not_exists >> transfer_to_redshift
+
+    task_transfer_s3_to_redshift
