@@ -105,7 +105,8 @@ class MwaaRedshiftStack(core.Stack):
             "RedshiftCSG",
             vpc = vpc,
             #vpc_subnets = ec2.SubnetSelection(subnets=vpc.private_subnets),
-            vpc_subnets = ec2.SubnetSelection(subnet_type=ec2.SubnetType.PRIVATE),
+            #vpc_subnets = ec2.SubnetSelection(subnet_type=ec2.SubnetType.PRIVATE),
+            vpc_subnets = ec2.SubnetSelection(subnet_type=ec2.SubnetType.PUBLIC),
             description="Redshift Cluster Subnet Group"
         )
 
@@ -145,7 +146,7 @@ class MwaaRedshiftStack(core.Stack):
             default_database_name=props['redshiftdb'],
             removal_policy=core.RemovalPolicy.DESTROY,
             roles=[mwaa_redshift_service_role],
-            publicly_accessible=False,
+            publicly_accessible=True,
             subnet_group=redshift_cluster_subnet_group
         )
 

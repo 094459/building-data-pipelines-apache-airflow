@@ -16,7 +16,7 @@ props = {
     'mwaadag' : 'airflow-timestream-demo',
     'mwaa-sg':'sg-0f920a406d470ae35',
     'mwaa-vpc-id':'vpc-001c3b06c3e39c278',
-    'redshiftclustername':'mwaa-redshift-cluster',
+    'redshiftclustername':'airflow-summit',
     'redshiftdb':'mwaa',
     'redshiftusername':'awsuser'
     }
